@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 
 const Button = ({clickHandler, text}) => {
+    
     return (
         <button onClick = {clickHandler}>
             {text}
@@ -10,7 +11,13 @@ const Button = ({clickHandler, text}) => {
         );
 }
 
+
+
+
+
+
 const App = () => {
+    
     //save clicks of each button to own state
     const [good, setGood] = useState(0);
     const [neutral, setNeutral] = useState(0);
@@ -26,6 +33,9 @@ const App = () => {
             <h4>Good: {good}</h4>
             <h4>Neutral: {neutral}</h4>
             <h4>Bad: {bad}</h4>
+            <h4>all: {good + bad + neutral}</h4>
+            <h4>Average: {(good - bad) / (good + bad + neutral)}</h4>
+            <h4>Positive: {(good / (good + bad + neutral)) * 100}%</h4>
         </div>
     );
 }
