@@ -44,7 +44,8 @@ const App = (props) => {
             <p><button onClick = {() => {setSelected(randomizer)}}>Next anecdote</button></p>
             <button onClick = {() => handleVotes(selected)}>vote</button>
             <h1>Anecdote with most votes:</h1>
-            {props.anecdotes[mostVotedAnecdote()]}
+            <p>{props.anecdotes[mostVotedAnecdote()]}.</p>
+            <p>has {vote[mostVotedAnecdote()]} votes</p>
 
         </div>
     );
