@@ -6,26 +6,50 @@ import ReactDOM from 'react-dom';
 const randomizer = () => {
     return Math.floor(Math.random() * 6);
 }
+
+
+
+
+
 const App = (props) => {
     const [selected, setSelected] = useState(0);
-    const votes = Array(6).fill(0);
-    console.log(votes);
-    
-    const upVote = (index) => {
-        votes[index] += 1;
+    const [vote, setVote] = useState([0, 0, 0, 0, 0, 0]);
+    const handleVotes = (index) => {
+        const newVotes = [...vote]
+        newVotes[index] ++;
+        
+        setVote(newVotes);
     }
-    //Får endret state dersom jeg hardkoder at votes skal ha den og den verdien, men ikke i knappen...
+    
+    const mostVotedAnecdote = () => {
+        let mostVotedIndex = 0;
+        let mostVoted = 0;
+        for (let i = 0; i < vote.length; i++){
+            if (vote[i] > mostVoted){
+                mostVotedIndex = i
+                mostVoted = vote[i]
+            }
+        }
+        console.log(vote);
+        console.log("most voted: ", mostVotedIndex)
+        return mostVotedIndex;
+
+    }
 
     return (
         <div>
+            <h1>Anecdote of the day:</h1>
             {props.anecdotes[selected]}
-            <p>Votes: {votes[selected]}</p>
+            <p>votes: {vote[selected]}</p>
             <p><button onClick = {() => {setSelected(randomizer)}}>Next anecdote</button></p>
-            <button onClick = {upVote(selected)}>vote</button>
+            <button onClick = {() => handleVotes(selected)}>vote</button>
+            <h1>Anecdote with most votes:</h1>
+            {props.anecdotes[mostVotedAnecdote()]}
+
         </div>
     );
 }
-//anecdotes: fra 0 tilogmed 5
+
 const anecdotes = [
     'If it hurts, do it more often',
     'Adding manpower to a late software project makes it later!',
