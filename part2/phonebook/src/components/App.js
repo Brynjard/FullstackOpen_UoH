@@ -72,23 +72,48 @@ const App = () => {
           Filter shown with: <input onChange ={useFilter}/>
       </div>
       
-      <form onSubmit = {addPerson}>
+      <FormAddPerson addPersonFunc = {addPerson} newNameFunc = {newName} handleNameChangeFunc = {handleNameChange} newNumberFunc = {newNumber} handleNumChangeFunc = {handleNumChange} />
+      <h2>Numbers</h2>
+      {/* Rendering filtered out persons only: */}
+      <Filter persons = {persons} filter = {filter}/>
+      
+    </div>
+  )
+}
+
+const FormAddPerson = ({addPersonFunc, newNameFunc, handleNameChangeFunc, newNumberFunc, handleNumChangeFunc}) => {
+    return (
+        <form onSubmit = {addPersonFunc}>
         <div>
-          name: <input value = {newName} onChange = {handleNameChange}/>
+          name: <input value = {newNameFunc} onChange = {handleNameChangeFunc}/>
         </div>
         <div>
-            number: <input value = {newNumber} onChange = {handleNumChange}/>
+            number: <input value = {newNumberFunc} onChange = {handleNumChangeFunc}/>
         </div>
         <div>
           <button type="submit">add</button>
         </div>
       </form>
-      <h2>Numbers</h2>
-      {/* Rendering filtered out persons only: */}
-      {persons.filter(person => person.name.includes(filter)).map(person => <p key ={person.id}>{person.name} - {person.number}</p>)}
-      
-    </div>
-  )
+    )
+}
+
+
+
+const Filter = ({persons, filter}) => {
+    let filteredPersons = persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase()));
+
+    return (
+        filteredPersons.map(person => <Person key = {person.id} person = {person}/>)
+    )
+    
+}
+
+const Person = ({person}) => {
+    return (
+        <p key = {person.id}>
+            {person.name} - {person.number}
+        </p>
+    )
 }
 
 export default App
