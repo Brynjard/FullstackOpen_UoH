@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 const FormAddPerson = ({addPersonFunc, newNameFunc, handleNameChangeFunc, newNumberFunc, handleNumChangeFunc}) => {
     return (
