@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Note from './Note'
 import axios from 'axios'
+import noteService from '/Users/brynjard/Documents/FullstackOpen_UoH/part2/practice/src/services/notes'
 
 const App = () => {
   const [notes, setNotes] = useState([]) 
@@ -8,21 +9,31 @@ const App = () => {
   const [showAll, setShowAll] = useState(true)
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/notes')
-      .then(response => {
-        setNotes(response.data)
-      })
-  }, [])
+    noteService
+    .getAll()
+    .then(response => {setNotes(response.data)
+    })
+    }, [])
 
   const notesToShow = showAll
     ? notes
     : notes.filter(note => note.important)
 
+  const toggleImportanceOf = id => {
+    const note = notes.find(n => n.id === id)
+    const changedNote = {...note, important: !note.important}
+
+    noteService
+    .update(id, changedNote)
+    .then(response => {
+      setNotes(notes.map(note => note.id !== id ? note : response.data))
+    })
+  }
   const rows = () => notesToShow.map(note =>
     <Note
       key={note.id}
       note={note}
+      toggleImportance = {() => toggleImportanceOf(note.id)}
     />
   )
   
@@ -37,11 +48,15 @@ const App = () => {
       content: newNote,
       date: new Date().toISOString(),
       important: Math.random() > 0.5,
-      id: notes.length + 1,
-    }
 
-    setNotes(notes.concat(noteObject))
-    setNewNote('')
+    }
+    noteService
+    .create(noteObject)
+    .then(response => {
+      setNotes(notes.concat(response.data))
+      setNewNote('')
+    })
+    
   }
 
   return (
