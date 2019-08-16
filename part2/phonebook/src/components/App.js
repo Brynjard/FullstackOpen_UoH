@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Filter from './Filter'
 import FormAddPerson from './FormAddPerson'
-
+import AddPersonFeedback from './AddPersonFeedback'
+import ErrorHandler from './ErrorHandler'
 import entryService from '/Users/brynjard/Documents/FullstackOpen_UoH/part2/phonebook/src/services/entries'
 
 
@@ -11,6 +12,8 @@ const App = () => {
   const [ newName, setNewName ] = useState('Register new person...')
   const [newNumber, setNewNumber] = useState('Add Phonenumber...')
   const [filter, setNewFilter] = useState('')
+  const [addedName, setAddedName] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   
   useEffect(() => {
     entryService
@@ -18,12 +21,12 @@ const App = () => {
     .then(allEntries => setPersons(allEntries))
     
   }, [])
-  
+  //Updating namestate according to form:
   const handleNameChange = (event) => {
       setNewName(event.target.value)
       
   }
-
+  //Delete entry from phonebook:
   const deleteEntry = (person) => {
     if (window.confirm(`Delete ${person.name} from the phonebook?`)){
       entryService
@@ -36,12 +39,11 @@ const App = () => {
     
 
   }
-
+  //Updating number-state from form:
   const handleNumChange = (event) => {
       setNewNumber(event.target.value)
   }
-
-
+  //Adding person to phonebook:
   const addPerson = (event) => {
     event.preventDefault()
 
@@ -64,6 +66,10 @@ const App = () => {
           setPersons(persons.concat(newEntry))
           setNewName('')
           setNewNumber('')
+          setAddedName(personObject.name)
+          setTimeout(() => {
+            setAddedName('')
+          }, 2500)
         })
         
     //If already registered:
@@ -76,7 +82,16 @@ const App = () => {
           .update(existingEntry.id, updatedEntry)
           .then(newEntry => {
             setPersons(persons.map(person => person.name !== newEntry.name ? person : newEntry))
-          })
+            setAddedName(personObject.name)
+          setTimeout(() => {
+            setAddedName('')
+          }, 2500)
+          }).catch(error =>{
+            setErrorMessage(`${personObject.name} has already been deleted from server`)
+            setTimeout(()=> {
+              setErrorMessage('')
+            }, 5000)
+          } )
         }
 
         setNewName('')
@@ -93,11 +108,14 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <AddPersonFeedback addedPersonName = {addedName}/>
+      <ErrorHandler errorMessage = {errorMessage}/>
       <div>
           Filter shown with: <input onChange ={useFilter}/>
       </div>
       
       <FormAddPerson addPersonFunc = {addPerson} newNameFunc = {newName} handleNameChangeFunc = {handleNameChange} newNumberFunc = {newNumber} handleNumChangeFunc = {handleNumChange} />
+
       <h2>Numbers</h2>
       {/* Rendering filtered out persons only: */}
       <Filter persons = {persons} filter = {filter} deleteEntry = {deleteEntry}/>
