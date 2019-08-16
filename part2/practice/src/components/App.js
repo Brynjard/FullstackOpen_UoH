@@ -11,7 +11,7 @@ const App = () => {
   useEffect(() => {
     noteService
     .getAll()
-    .then(response => {setNotes(response.data)
+    .then(initialNotes => {setNotes(initialNotes)
     })
     }, [])
 
@@ -25,10 +25,16 @@ const App = () => {
 
     noteService
     .update(id, changedNote)
-    .then(response => {
-      setNotes(notes.map(note => note.id !== id ? note : response.data))
-    })
+    .then(returnedNote => {
+      setNotes(notes.map(note => note.id !== id ? note : returnedNote))
+    }).catch(
+      alert(
+        `the note '${note.content}' was already deleted from the server.`
+        )
+      )
+      setNotes(notes.filter(n => n.id !== id))
   }
+
   const rows = () => notesToShow.map(note =>
     <Note
       key={note.id}
@@ -52,8 +58,8 @@ const App = () => {
     }
     noteService
     .create(noteObject)
-    .then(response => {
-      setNotes(notes.concat(response.data))
+    .then(returnedNote => {
+      setNotes(notes.concat(returnedNote))
       setNewNote('')
     })
     
