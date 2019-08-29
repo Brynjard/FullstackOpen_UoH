@@ -1,6 +1,6 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/notes'
-//Heroku: https://dry-savannah-94091.herokuapp.com/
+const baseUrl = '/api/notes'
+//Heroku: https://cryptic-savannah-75189.herokuapp.com/notes
 const getAll = () => {
     const request = axios.get(baseUrl)
     const nonExisting = {
